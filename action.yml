@@ -4,7 +4,13 @@ inputs:
   doc-folder:
     description: 'folder includes document'
     required: true
-    default: 'docs'
+    default: 'docs',
+  gist-username:
+    description: 'folder includes document'
+    required: true
+  gist-token:
+    description: 'folder includes document'
+    required: true
 outputs:
   time: # id of output
     description: 'The time we greeted you'
