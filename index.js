@@ -33,7 +33,7 @@ try {
       if (fs.lstatSync(directoryPath + '/' + file).isDirectory()) {
         fs.readdir(directoryPath + '/' + file, (err, docs) => {
           docs.forEach((docPath) => {
-            const [fileName, gistId, ] = docPath.split('.');
+            const [fileName, gistId, fileType] = docPath.split('.');
             const fileContent = fs.readFileSync(directoryPath + '/' + file + '/' + docs, 'utf8')
             gh.getGist(gistId).update({
               files: {
