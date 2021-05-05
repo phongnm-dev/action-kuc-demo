@@ -19,7 +19,7 @@ try {
   // const payload = JSON.stringify(github.context.payload, undefined, 2)
   // console.log(`The event payload: ${payload}`);
   
-  const directoryPath = github.workspace + '/' + core.getInput('doc-folder');
+  const directoryPath = core.getInput('doc-folder');
 
   // const directoryPath = './sample_docs';
 
