@@ -13730,52 +13730,40 @@ const github = __nccwpck_require__(6366);
 const fs = __nccwpck_require__(5747);
 const GitHubApi = __nccwpck_require__(6915);
 
-// unauthenticated client
-const gh = new GitHubApi({
-  username: core.getInput('gist-username'),
-  token: core.getInput('gist-token')
-});
-
 try {
-  // // `who-to-greet` input defined in action metadata file
-  // const nameToGreet = core.getInput('who-to-greet');
-  // console.log(`Hello ${nameToGreet}!`);
-  // const time = (new Date()).toTimeString();
-  // core.setOutput("time", time);
-  // // Get the JSON webhook payload for the event that triggered the workflow
-  // const payload = JSON.stringify(github.context.payload, undefined, 2)
-  // console.log(`The event payload: ${payload}`);
-  
   const directoryPath = core.getInput('doc-folder');
-
-  // const directoryPath = './sample_docs';
-
-  fs.readdir(directoryPath, function (err, files) {
-    //handling error
-    if (err) {
-        return console.log('Unable to scan directory: ' + err);
-    } 
-    //listing all files using forEach
-    files.forEach(function (file) {
-      if (fs.lstatSync(directoryPath + '/' + file).isDirectory()) {
-        fs.readdir(directoryPath + '/' + file, (err, docs) => {
-          docs.forEach((docPath) => {
-            const [fileName, gistId, fileType] = docPath.split('.');
-            const fileContent = fs.readFileSync(directoryPath + '/' + file + '/' + docs, 'utf8')
-            gh.getGist(gistId).update({
-              files: {
-                [fileName+'.'+fileType]: {
-                  content: fileContent
-                }
-              }
-            })
-          })
-        })
-      }
-    });
+  const gh = new GitHubApi({
+    username: core.getInput('gist-username'),
+    token: core.getInput('gist-token')
   });
+
+  function updateFolder(folderPath) {
+    const files = fs.readdirSync(folderPath);
+
+    files.forEach((file) => {
+      if (fs.lstatSync(folderPath + '/' + file).isDirectory()) {
+        updateFolder(folderPath + '/' + file)
+      } else {
+        updateGistFile(folderPath + '/' + file, file)
+      }
+    })
+  };
+
+  function updateGistFile(filePath, docName) {
+    const [fileName, gistId, fileType] = docName.split('.');
+    const fileContent = fs.readFileSync(filePath, 'utf8')
+    gh.getGist(gistId).update({
+      files: {
+        [fileName+'.'+fileType]: {
+          content: fileContent
+        }
+      }
+    })
+  }
+  
+  updateFolder(directoryPath)
 } catch (error) {
-  // core.setFailed(error.message);
+  core.setFailed(error.message);
 }
 
 })();
