@@ -4,7 +4,6 @@ inputs:
   doc-folder:
     description: 'folder includes document'
     required: true
-    default: 'docs',
   gist-username:
     description: 'folder includes document'
     required: true
