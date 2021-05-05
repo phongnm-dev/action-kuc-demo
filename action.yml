@@ -1,10 +1,10 @@
 name: 'kuc demo'
 description: 'demo for kuc'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  doc-folder:
+    description: 'folder includes document'
     required: true
-    default: 'World'
+    default: 'docs'
 outputs:
   time: # id of output
     description: 'The time we greeted you'
