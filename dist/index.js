@@ -13740,7 +13740,7 @@ try {
   async function updateFolder(folderPath) {
     const files = fs.readdirSync(folderPath);
 
-    for (const file in files) {
+    for (const file of files) {
       const fullFilePath = folderPath + '/' + file
       try {
         if (fs.lstatSync(fullFilePath).isDirectory()) {
