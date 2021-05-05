@@ -13737,22 +13737,27 @@ try {
     token: core.getInput('gist-token')
   });
 
-  function updateFolder(folderPath) {
+  async function updateFolder(folderPath) {
     const files = fs.readdirSync(folderPath);
 
-    files.forEach((file) => {
-      if (fs.lstatSync(folderPath + '/' + file).isDirectory()) {
-        updateFolder(folderPath + '/' + file)
-      } else {
-        updateGistFile(folderPath + '/' + file, file)
+    for (const file in files) {
+      const fullFilePath = folderPath + '/' + file
+      try {
+        if (fs.lstatSync(fullFilePath).isDirectory()) {
+          await updateFolder(fullFilePath)
+        } else {
+          await updateGistFile(fullFilePath, file)
+        }
+      } catch (error) {
+        console.log(error)
       }
-    })
+    }
   };
 
   function updateGistFile(filePath, docName) {
     const [fileName, gistId, fileType] = docName.split('.');
     const fileContent = fs.readFileSync(filePath, 'utf8')
-    gh.getGist(gistId).update({
+    return gh.getGist(gistId).update({
       files: {
         [fileName+'.'+fileType]: {
           content: fileContent
