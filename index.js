@@ -15,14 +15,10 @@ try {
 
     for (const file of files) {
       const fullFilePath = folderPath + '/' + file
-      try {
-        if (fs.lstatSync(fullFilePath).isDirectory()) {
-          await updateFolder(fullFilePath)
-        } else {
-          await updateGistFile(fullFilePath, file)
-        }
-      } catch (error) {
-        console.log(error)
+      if (fs.lstatSync(fullFilePath).isDirectory()) {
+        await updateFolder(fullFilePath)
+      } else {
+        await updateGistFile(fullFilePath, file)
       }
     }
   };
@@ -38,7 +34,7 @@ try {
       }
     })
   }
-  
+
   updateFolder(directoryPath)
 } catch (error) {
   core.setFailed(error.message);
